@@ -1,0 +1,71 @@
+﻿<Window x:Class="ImageVerification.DatabaseConnectionSettings"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:ImageVerification"
+        mc:Ignorable="d"
+         WindowStartupLocation="CenterScreen"
+        Title="Ustawienia połączenia" Height="222.4" Width="350"
+        Background="#535353"
+        Loaded="Window_Loaded"
+        Icon="Icon\2_koM_icon.ico">
+    <Window.Resources>
+        <SolidColorBrush x:Key="PrimaryBrush" Color="#f7a600" />
+        <SolidColorBrush x:Key="PrimaryFont" Color="Black" />
+        <Style x:Key="ButtonStyle"
+               TargetType="Button">
+
+            <Setter Property="Background" Value="#535353"/>
+            <Setter Property="FontSize" Value="12"/>
+            <Setter Property="FontWeight" Value="Bold"/>
+            <Setter Property="Foreground" Value="White"/>
+            <Setter Property="Cursor" Value="Hand"/>
+            <Setter Property="Height" Value="40"/>
+            <Setter Property="Width" Value="120"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="{x:Type Button}">
+                        <Border Background="{TemplateBinding Background}" BorderBrush="White" BorderThickness="2">
+                            <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                        </Border>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+            <Style.Triggers>
+                <Trigger Property="IsMouseOver" Value="True">
+                    <Setter Property="Background" Value="#f7a600"/>
+                </Trigger>
+            </Style.Triggers>
+        </Style>
+    </Window.Resources>
+    
+    <Grid Margin="5">
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="auto"></ColumnDefinition>
+            <ColumnDefinition Width="auto"></ColumnDefinition>
+        </Grid.ColumnDefinitions>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="auto"></RowDefinition>
+            <RowDefinition Height="auto"></RowDefinition>
+            <RowDefinition Height="auto"></RowDefinition>
+            <RowDefinition Height="auto"></RowDefinition>
+            <RowDefinition Height="auto"></RowDefinition>
+
+        </Grid.RowDefinitions>
+        <TextBlock Text="Adres serwera:" HorizontalAlignment="Right" VerticalAlignment="Center" Margin="5" Foreground="White"></TextBlock>
+        <TextBox x:Name="Servertbox" Grid.Column="1" HorizontalAlignment="Left" Width="200" Height="20" VerticalAlignment="Bottom" Margin="5"/>
+
+        <TextBlock Text="Nazwa bazy:" HorizontalAlignment="Right" VerticalAlignment="Center" Margin="5" Foreground="White" Grid.Column="0" Grid.Row="1"></TextBlock>
+        <TextBox x:Name="Basetbox" Grid.Column="1" Grid.Row="1" HorizontalAlignment="Left" Width="200" Height="20" VerticalAlignment="Bottom" Margin="5"></TextBox>
+        
+        <TextBlock Text="Użytkownik:" HorizontalAlignment="Right" VerticalAlignment="Center" Margin="5" Foreground="White" Grid.Column="0" Grid.Row="2"></TextBlock>
+        <TextBox x:Name="Usertbox" Grid.Column="1" Grid.Row="2" HorizontalAlignment="Left" Width="200" Height="20" VerticalAlignment="Bottom" Margin="5"></TextBox>
+        
+        <TextBlock Text="Hasło:" HorizontalAlignment="Right" VerticalAlignment="Center" Margin="5" Foreground="White" Grid.Column="0" Grid.Row="3"></TextBlock>
+        <PasswordBox x:Name="Passwordtbox" Grid.Column="1" Grid.Row="3" HorizontalAlignment="Left" Width="200" Height="20" VerticalAlignment="Bottom" Margin="5"></PasswordBox>
+
+        <Button x:Name="Okbtn" Content="Zapisz" Margin="10" VerticalAlignment="Center" HorizontalAlignment="Center" Style="{StaticResource ButtonStyle}" Grid.Column="0" Grid.Row="4" Click="Okbtn_Click"></Button>
+        <Button x:Name="Cancelbtn" Content="Anuluj" Style="{StaticResource ButtonStyle}" Grid.Column="1" Grid.Row="4" VerticalAlignment="Center" HorizontalAlignment="Center" Margin="10" Click="Cancelbtn_Click"></Button>
+    </Grid>
+</Window>

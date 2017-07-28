@@ -1,0 +1,52 @@
+﻿<Window x:Class="ImageVerification.PleaseWait"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:ImageVerification"
+        mc:Ignorable="d"
+        Title="PleaseWait" Height="200" Width="300"         
+        WindowStartupLocation="CenterScreen"
+        Background="#535353"
+        Loaded="Window_Loaded"
+        WindowStyle="None"
+        ShowInTaskbar="False"
+        >
+    <Window.Resources>
+
+        <Style x:Key="ButtonStyle"
+               TargetType="Button">
+
+            <Setter Property="Background" Value="#535353"/>
+            <Setter Property="FontSize" Value="12"/>
+            <Setter Property="FontWeight" Value="Bold"/>
+            <Setter Property="Foreground" Value="White"/>
+            <Setter Property="Cursor" Value="Hand"/>
+            <Setter Property="Height" Value="40"/>
+            <Setter Property="Width" Value="120"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="{x:Type Button}">
+                        <Border Background="{TemplateBinding Background}" BorderBrush="#535353" BorderThickness="1">
+                            <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                        </Border>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+            <Style.Triggers>
+                <Trigger Property="IsMouseOver" Value="True">
+                    <Setter Property="Background" Value="#f7a600"/>
+                </Trigger>
+            </Style.Triggers>
+        </Style>
+    </Window.Resources>
+    <Grid>
+
+        <StackPanel Height="auto" HorizontalAlignment="Center" VerticalAlignment="Center" Margin="0,0,0,0">
+            <TextBlock Margin="69,10,58.6,10" VerticalAlignment="Center" Foreground="White" TextAlignment="Center" HorizontalAlignment="Center" Height="39"  Width="166"><Run FontWeight="Bold" Text="Proszę czekać"/><Run FontWeight="Bold" Text=". "/><LineBreak/><Run FontWeight="Bold" Text="Przetwarzanie zdjęcia"/></TextBlock>
+            <ProgressBar Foreground="#f7a600"  Width="250" VerticalAlignment="Center" HorizontalAlignment="Center" Orientation="Horizontal" IsIndeterminate="True" Height="15"></ProgressBar>
+
+        </StackPanel>
+
+    </Grid>
+</Window>
