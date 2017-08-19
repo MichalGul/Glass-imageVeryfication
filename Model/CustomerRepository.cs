@@ -9,28 +9,29 @@ using System.Windows;
 
 namespace ImageVerification.Model
 {
-    class CustomerRepository
+   public class CustomerRepository :ICustomerRepository
     {
         public static ObservableCollection<Customer> customersBase;
 
 
         public ObservableCollection<Customer> GetCustomers()
         {
-            if (customersBase == null)
-                LoadCustomersFromDatabase();
-            return customersBase;
+           
+             LoadCustomersFromDatabase();
+             return customersBase;
 
         }
 
-      //TODO: w okienku edycji klienta trzeba bedzie dodac kod ktory selected Customera zmienia
+     
         public void UpdateCustomer(Customer selectedCustomer)
         {
+            //Podmiana klienta na danym miejsciu
             Customer customerToUpdate = customersBase.Where(C => C.CustomerId == selectedCustomer.CustomerId).FirstOrDefault();
             customerToUpdate = selectedCustomer;
-
+                  
             try
             {
-
+                //Update w bazie na podmienionego klienta
                 MySqlConnection connection = new MySqlConnection(Utilities.connectionString);
                 string updateQuerry = "Update Klienci SET imie=@param2, nazwisko=@param3, email=@param4, Rozstaw_Zrenic=@param5, Szerokosc_Twarzy=@param6, Szerokosc_Skroni=@param7, PraweOko_Nos=@param8, LeweOko_Nos=@param9, Ucho_Nos=@param10, Oko_Nos =@param11,  zatwierdzone=@param12, zdjecie=@param13, zdjecie_profil=@param14 where id = " + Utilities.currentID;
                 connection.Open();
@@ -68,15 +69,93 @@ namespace ImageVerification.Model
             catch (Exception ex)
             {
 
-                MessageBox.Show("Błąd wprowadzania wartośc lub błąd połączenia. Dane liczbowe prosze wprowadzać przy pomocy przecinka.", "Błąd", MessageBoxButton.OK, MessageBoxImage.Error);
+                MessageBox.Show("Błąd wprowadzania wartośc lub błąd połączenia. Dane liczbowe prosze wprowadzać przy pomocy kropki.", "Błąd", MessageBoxButton.OK, MessageBoxImage.Error);
                 return;
 
             }
 
+            
+        }
+
+        //Obsługa usuwania klienta
+
+        public void DeleteCustomer(Customer selectedCustomerToDelete)
+        {
+            //otworzenie 3 polaczen sprawdzenie czy sa rekordy o danym current ID i usuwanie.                   
+            if (CheckIfRowExists(selectedCustomerToDelete.CustomerId.ToString(), "Punkty") == true)
+            {
+                DeleteRowInTable("Punkty", selectedCustomerToDelete.CustomerId.ToString(), "Id_klienta");
+
+            }
+            if (CheckIfRowExists(selectedCustomerToDelete.CustomerId.ToString(), "Punkty_profil") == true)
+            {
+                DeleteRowInTable("Punkty_profil", selectedCustomerToDelete.CustomerId.ToString(), "Id_klienta");
+            }
+
+            //Usuniecie klienta z głównej tabeli
 
 
 
+            DeleteRowInTable("Klienci", selectedCustomerToDelete.CustomerId.ToString(), "id");
+            customersBase.Remove(selectedCustomerToDelete);
+           
 
+
+        }
+
+
+        private void DeleteRowInTable(string tableName, string id, string column)
+        {
+            try
+            {
+                MySqlConnection connection = new MySqlConnection(Utilities.connectionString);
+                string querry = "DELETE FROM " + tableName + " WHERE " + column + " = " + id;
+                MySqlCommand command = new MySqlCommand(querry, connection);
+
+                connection.Open();
+                command.ExecuteReader();
+                connection.Close();
+            }
+            catch(Exception ex)
+            {
+                MessageBox.Show("Bład usuwania rekordu w tabeli: " + tableName + " ." + ex.Message, "Błąd", MessageBoxButton.OK, MessageBoxImage.Error);
+            }
+
+        }
+
+        private bool CheckIfRowExists(string klientId, string tableName)
+        {
+            MySqlConnection connection = new MySqlConnection(Utilities.connectionString);
+            string querry = "Select count(Id) FROM " + tableName + " where Id_klienta = " + klientId;
+            MySqlCommand command = new MySqlCommand(querry, connection);
+            int result = 0;
+
+            connection.Open();
+
+            MySqlDataReader data = command.ExecuteReader();
+            while (data.Read())
+            {
+                result = data.GetInt32(0);
+            }
+            connection.Close();
+
+            return (result >= 1);
+
+        }
+
+        public byte[] GetCustomerFrontImageById(int id)
+        {
+            if (customersBase == null)
+                LoadCustomersFromDatabase();
+            return customersBase.Where(c => c.CustomerId == id).FirstOrDefault().FrontImage;
+
+        }
+
+        public byte[] GetCustomerProfileImageById(int id)
+        {
+            if (customersBase == null)
+                LoadCustomersFromDatabase();
+            return customersBase.Where(c => c.CustomerId == id).FirstOrDefault().ProfileImage;
 
         }
 
@@ -105,6 +184,7 @@ namespace ImageVerification.Model
                     customer.CustomerId = (int)results["id"];
                     customer.CustomerName = results["imie"].ToString();
                     customer.CustomerSurname = results["nazwisko"].ToString();
+                    customer.CustomerEmail = results["email"].ToString();
                     customer.PupilDistance = (double)results["Rozstaw_Zrenic"];
                     customer.FaceWidth = (double)results["Szerokosc_Twarzy"];
                     customer.TempleWidth = (double)results["Szerokosc_Skroni"];

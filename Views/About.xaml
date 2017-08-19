@@ -7,7 +7,8 @@
         mc:Ignorable="d"
         Title="Informacje" Height="200.299" Width="300"
         WindowStartupLocation="CenterScreen"
-        Background="#535353">
+        Background="#535353"
+        Icon="\Icon\2_koM_icon.ico">
     <Window.Resources>
         
         <Style x:Key="ButtonStyle"

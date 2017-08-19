@@ -64,26 +64,23 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
-    <Compile Include="About.xaml.cs">
+    <Compile Include="Model\ICustomerRepository.cs" />
+    <Compile Include="Views\About.xaml.cs">
       <DependentUpon>About.xaml</DependentUpon>
     </Compile>
-    <Page Include="DatabaseConnectionSettings.xaml">
+    <Page Include="Views\DatabaseConnectionSettings.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="EditClient.xaml">
+    <Page Include="Views\EditClient.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="EditRow.xaml">
+    <Page Include="Views\ImageDisplay.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="ImageDisplay.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
-    <Page Include="MainWindow.xaml">
+    <Page Include="Views\MainWindow.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
@@ -91,49 +88,47 @@
       <DependentUpon>App.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="DatabaseConnectionSettings.xaml.cs">
+    <Compile Include="Views\DatabaseConnectionSettings.xaml.cs">
       <DependentUpon>DatabaseConnectionSettings.xaml</DependentUpon>
     </Compile>
-    <Compile Include="EditClient.xaml.cs">
+    <Compile Include="Views\EditClient.xaml.cs">
       <DependentUpon>EditClient.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="EditRow.xaml.cs">
-      <DependentUpon>EditRow.xaml</DependentUpon>
     </Compile>
     <Compile Include="Model\Customer.cs" />
     <Compile Include="Model\CustomerRepository.cs" />
-    <Compile Include="PleaseWait.xaml.cs">
+    <Compile Include="Model\FeaturePoint.cs" />
+    <Compile Include="Views\PleaseWait.xaml.cs">
       <DependentUpon>PleaseWait.xaml</DependentUpon>
     </Compile>
-    <Compile Include="ProfileImageDisplay.xaml.cs">
+    <Compile Include="Views\ProfileImageDisplay.xaml.cs">
       <DependentUpon>ProfileImageDisplay.xaml</DependentUpon>
     </Compile>
-    <Compile Include="TablesInfo.xaml.cs">
+    <Compile Include="Views\TablesInfo.xaml.cs">
       <DependentUpon>TablesInfo.xaml</DependentUpon>
     </Compile>
     <Compile Include="Other\ImageConverter.cs" />
     <Compile Include="Other\Utilities.cs" />
     <Compile Include="Model\FeaturePointsRepository.cs" />
-    <Compile Include="ImageDisplay.xaml.cs">
+    <Compile Include="Views\ImageDisplay.xaml.cs">
       <DependentUpon>ImageDisplay.xaml</DependentUpon>
     </Compile>
-    <Compile Include="MainWindow.xaml.cs">
+    <Compile Include="Views\MainWindow.xaml.cs">
       <DependentUpon>MainWindow.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
-    <Page Include="About.xaml">
+    <Page Include="Views\About.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="PleaseWait.xaml">
+    <Page Include="Views\PleaseWait.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="ProfileImageDisplay.xaml">
+    <Page Include="Views\ProfileImageDisplay.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="TablesInfo.xaml">
+    <Page Include="Views\TablesInfo.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
@@ -172,9 +167,7 @@
   <ItemGroup>
     <Resource Include="Icon\2_koM_icon.ico" />
   </ItemGroup>
-  <ItemGroup>
-    <Folder Include="Views\" />
-  </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

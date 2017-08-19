@@ -1,4 +1,5 @@
-﻿using MySql.Data.MySqlClient;
+﻿using ImageVerification.Model;
+using MySql.Data.MySqlClient;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
@@ -25,17 +26,23 @@ namespace ImageVerification
     /// </summary>
     public partial class ProfileImageDisplay : Window
     {
-        DataSet ds;
+
+        public Customer selectedCustomerToRecalculate;
+        public CustomerRepository customerRepository;
+
+        FeaturePointsRepository profileFeaturePointsRepository;
+
+        double eyeNoseDistance;
+        double earNoseDistance;
         //Odniesienia do wyswietlanego obrazu na canvasie(do skalowania pixeli)
         ImageSource imageSource;
         BitmapImage bitmapImage;
 
         //Struktura słownikowa do zapamiętywania początkowych współrzędnych punktów      
-        ObservableCollection<FeaturePointsRepository> profileoriginalPoints;
+        ObservableCollection<FeaturePoint> profileoriginalPoints;
         //Stworzenie listy aktualnych punktow
-        ObservableCollection<FeaturePointsRepository> profilefeaturePoints;
-
-       
+        ObservableCollection<FeaturePoint> profilefeaturePoints;
+    
 
         #region elementy do przemieszczania narysowanych punktow na obrazie
         //Poczatkowa pozycja elementu przed przemieszczeniem
@@ -61,60 +68,23 @@ namespace ImageVerification
 
         private void Window_Loaded(object sender, RoutedEventArgs e)
         {
+
+            customerRepository = new CustomerRepository();
+
             try
             {
-                string querry = "Select zdjecie_profil from Klienci where id = " + Utilities.currentID;
-                MySqlConnection connection = new MySqlConnection(Utilities.connectionString);
-                //  MySqlCommand cmd = new MySqlCommand(querry, connection);
-
-                //Wczytywanie obrazka
-                connection.Open();
-                ds = new DataSet(); // inicjalizacja danych
-                                    //Pobranie obrazka z bazy
-                MySqlDataAdapter sqa = new MySqlDataAdapter(querry, connection);
-                sqa.Fill(ds);
-                connection.Close();
-
-                if(sqa == null)
-                {
-                    MessageBox.Show("Wczytywanie zakończone niepowodzeniem. Brak zdjęcia", "Błąd", MessageBoxButton.OK, MessageBoxImage.Error);
-                    this.Close();
-                    return;
-
-                }
-                //Konwersja zdjecia z bazy do tablicy byte
-                byte[] data = (byte[])ds.Tables[0].Rows[0][0];
-
-                // Stworzenie strumienia i przepisanie tablicy do niego
-                MemoryStream strm = new MemoryStream();
-                strm.Write(data, 0, data.Length);
-                strm.Position = 0;
-
-                //Stworzenie obrazga z tego strumienia
-                System.Drawing.Image img = System.Drawing.Image.FromStream(strm);
-                BitmapImage bi = new BitmapImage();
-                bi.BeginInit();
-                MemoryStream ms = new MemoryStream();
-                img.Save(ms, System.Drawing.Imaging.ImageFormat.Bmp);
-                ms.Seek(0, SeekOrigin.Begin);
-                bi.StreamSource = ms;
-                bi.EndInit();
-                imageDisplay.Source = bi;
-
+                ImageConverter byteArrayToImage = new ImageConverter();          
+                imageDisplay.Source = byteArrayToImage.ConvertByteArrayToBitmap(customerRepository.GetCustomerProfileImageById(Convert.ToInt32(Utilities.currentID)));
                 //Skalowanie wspolrzednych na pixele
                 imageSource = imageDisplay.Source;
                 //Pobieranie bitmapy z kontrolki image
-                bitmapImage = (BitmapImage)imageSource;
+                bitmapImage = (BitmapImage)imageSource;           
             }
             catch(Exception ex)
             {
-                MessageBox.Show("Wczytywanie zakończone niepowodzeniem. Brak zdjęcia", "Błąd", MessageBoxButton.OK, MessageBoxImage.Error);
-              
-               
+                MessageBox.Show("Wczytywanie zakończone niepowodzeniem. Brak zdjęcia. " + ex.Message, "Błąd", MessageBoxButton.OK, MessageBoxImage.Error);
+                       
             }
-
-
-
 
         }
 
@@ -132,26 +102,22 @@ namespace ImageVerification
             double pixelMousePositionX = e.GetPosition(imageDisplay).X * bitmapImage.PixelWidth / imageDisplay.ActualWidth;
             double pixelMousePositionY = e.GetPosition(imageDisplay).Y * bitmapImage.PixelHeight / imageDisplay.ActualHeight;
             // Wypisanie wspolrzednych postawienie elipsy
-            tboxTest.Text = pixelMousePositionX.ToString();
-            tboxTest2.Text = pixelMousePositionY.ToString();
+           // tboxTest.Text = pixelMousePositionX.ToString();
+           // tboxTest2.Text = pixelMousePositionY.ToString();
         }
 
         private void btnShowMark_Click(object sender, RoutedEventArgs e)
         {
-
-            profilefeaturePoints = FeaturePointsRepository.GetProfilePointsFormDatabase();
+            profileFeaturePointsRepository = new FeaturePointsRepository();
+            profilefeaturePoints = profileFeaturePointsRepository.GetProfilePoints();
             //Zapamietanie punktów przed przesuwaniem
             profileoriginalPoints = profilefeaturePoints;
-
-            ///Dziala -> w słowniku sa wspolrzedne punktow z bazy
 
             // Krok 2 -> Namalowanie punktow z bazy na obrazie
             // Dziala rysowanie po obrazku
             DrawCircleUniform(GetPointByName(profilefeaturePoints, "Nos").X, GetPointByName(profilefeaturePoints, "Nos").Y, true);
             DrawCircleUniform(GetPointByName(profilefeaturePoints, "Ucho").X, GetPointByName(profilefeaturePoints, "Ucho").Y, true);
             DrawCircleUniform(GetPointByName(profilefeaturePoints, "Oko").X, GetPointByName(profilefeaturePoints, "Oko").Y, true);
-
-
 
             // Wyswietlenie punktow w kontrolce data Grid krok 3
             pointsDataGrid.ItemsSource = profilefeaturePoints;
@@ -209,28 +175,10 @@ namespace ImageVerification
             }
             try
             {
-                //Akceptowanie punktów na obrazie - update bazy -> dziala
-                MySqlConnection connection = new MySqlConnection(Utilities.connectionString);         //ZAJRZYJ TAM --------------------------->
-                string updateQuerry = "Update Punkty_Profil SET Ucho_X=@val1, Ucho_Y=@val2, Nos_X=@val3, Nos_Y=@val4, Oko_X=@val5, Oko_Y=@val6 where id_klienta = " + Utilities.currentID;
-                connection.Open();
-                MySqlCommand prpCommand = new MySqlCommand(updateQuerry, connection);
 
-                prpCommand.Prepare();
-                prpCommand.Parameters.AddWithValue("@val1", GetPointByName(profilefeaturePoints, "Ucho").X);
-                prpCommand.Parameters.AddWithValue("@val2", GetPointByName(profilefeaturePoints, "Ucho").Y);
-
-                prpCommand.Parameters.AddWithValue("@val3", GetPointByName(profilefeaturePoints, "Nos").X);
-                prpCommand.Parameters.AddWithValue("@val4", GetPointByName(profilefeaturePoints, "Nos").Y);
-
-                prpCommand.Parameters.AddWithValue("@val5", GetPointByName(profilefeaturePoints, "Oko").X);
-                prpCommand.Parameters.AddWithValue("@val6", GetPointByName(profilefeaturePoints, "Oko").Y);
-
-                int result = prpCommand.ExecuteNonQuery();
-
-                connection.Close();
-
-                // Update pola zatwierdzony (na true) w tabeli klienci i metoda Recaclucate
                 Recalculate();
+                profileFeaturePointsRepository.UpdateProfilePoints(profilefeaturePoints);
+                profileFeaturePointsRepository.UpdateProfileDistances(earNoseDistance, eyeNoseDistance);
 
 
 
@@ -336,43 +284,23 @@ namespace ImageVerification
 
         private void Recalculate()
         {
-            double scaleFactor = GetScaleFactorFromDatabase();
+            double scaleFactor = FeaturePointsRepository.GetProfileScaleFactor();
 
             Point ear = GetPointByName(profilefeaturePoints, "Ucho");
             Point nose = GetPointByName(profilefeaturePoints, "Nos");
             Point eye = GetPointByName(profilefeaturePoints, "Oko");
 
             //Odległość jest liczona poprawnie
-            double earToNose = Math.Round((nose - ear).Length * scaleFactor,2);
-            double eyeToNose = Math.Round((nose - eye).Length * scaleFactor, 2);
-            tboxTest123.Text = earToNose.ToString();
-            try
-            {
-                //Update odległości
-                MySqlConnection connection = new MySqlConnection(Utilities.connectionString);
-                string updateQuerry = "Update Punkty_Profil SET Ucho_Nos = @earToNose, Oko_Nos=@eyeToNose where Id_klienta = " + Utilities.currentID;
-                string updateMainTable = "Update Klienci SET Ucho_Nos = @earToNose, Oko_Nos = @eyeToNose where id = " + Utilities.currentID;
-                connection.Open();
-                MySqlCommand prpCommand = new MySqlCommand(updateQuerry, connection);
+            selectedCustomerToRecalculate.ProfileNoseEarDistance = Math.Round((nose - ear).Length * scaleFactor, 2);
+            selectedCustomerToRecalculate.ProfileNoseEyeDistance = Math.Round((nose - eye).Length * scaleFactor, 2);
 
-                prpCommand.Prepare();
-                prpCommand.Parameters.AddWithValue("@earToNose", earToNose);
-                prpCommand.Parameters.AddWithValue("@eyeToNose", eyeToNose);
-                int result = prpCommand.ExecuteNonQuery();
+            earNoseDistance = selectedCustomerToRecalculate.ProfileNoseEarDistance;
+            eyeNoseDistance = selectedCustomerToRecalculate.ProfileNoseEyeDistance;
 
-                MySqlCommand prpCommandMainTable = new MySqlCommand(updateMainTable, connection);
-                prpCommandMainTable.Prepare();
-                prpCommandMainTable.Parameters.AddWithValue("@earToNose", earToNose);
-                prpCommandMainTable.Parameters.AddWithValue("@eyeToNose", eyeToNose);
-                int maintableReult = prpCommandMainTable.ExecuteNonQuery();
-                connection.Close();
+            customerRepository = new CustomerRepository();
+            customerRepository.UpdateCustomer(selectedCustomerToRecalculate);
 
-                MessageBox.Show("Pomyślnie zaaktualizowano bazę", "Sukces", MessageBoxButton.OK, MessageBoxImage.Information);
-            }
-            catch(MySqlException ex)
-            {
-                MessageBox.Show("Aktualizacja bazy nieudana. Sprawdź ustawienia połączenia", "Błąd", MessageBoxButton.OK, MessageBoxImage.Error);
-            }
+            
         }
 
 
@@ -447,30 +375,9 @@ namespace ImageVerification
         }
 
 
-        private double GetScaleFactorFromDatabase()
-        {
-            double scaleFactor = 0;
-            //Pobieranie danych z bazy
-            string querry = "Select WspSkalowania from Punkty_Profil where id_klienta = " + Utilities.currentID;
+      
 
-            MySqlConnection connection = new MySqlConnection(Utilities.connectionString);
-            //Odczytanie wynikow zapytania
-            MySqlDataReader results = null;
-
-            connection.Open();
-            //Stworzenie polecenia do bazy danych
-            MySqlCommand command = new MySqlCommand(querry, connection);
-            results = command.ExecuteReader();
-
-            while (results.Read())
-            {
-                scaleFactor = (double)results["WspSkalowania"];
-            }
-
-            return scaleFactor;
-        }
-
-        private Point GetPointByName(ObservableCollection<FeaturePointsRepository> collection, string pointName)
+        private Point GetPointByName(ObservableCollection<FeaturePoint> collection, string pointName)
         {
             Point selectedPoint = new Point(0, 0);
 

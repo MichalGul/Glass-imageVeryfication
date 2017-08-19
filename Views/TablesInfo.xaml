@@ -13,7 +13,7 @@
         WindowState="Maximized"   
         WindowStyle="SingleBorderWindow" d:DesignHeight="801"
         Loaded="Window_Loaded"
-        Icon="Icon\2_koM_icon.ico">
+        Icon="\Icon\2_koM_icon.ico">
     <Window.Resources>
         <SolidColorBrush x:Key="PrimaryBrush" Color="#f7a600" />
         <SolidColorBrush x:Key="PrimaryFont" Color="Black" />

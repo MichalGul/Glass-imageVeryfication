@@ -9,7 +9,7 @@
         Title="Ustawienia połączenia" Height="222.4" Width="350"
         Background="#535353"
         Loaded="Window_Loaded"
-        Icon="Icon\2_koM_icon.ico">
+        Icon="\Icon\2_koM_icon.ico">
     <Window.Resources>
         <SolidColorBrush x:Key="PrimaryBrush" Color="#f7a600" />
         <SolidColorBrush x:Key="PrimaryFont" Color="Black" />

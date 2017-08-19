@@ -9,7 +9,7 @@ using System.Windows.Media.Imaging;
 
 namespace ImageVerification.Model
 {
-    class Customer : INotifyPropertyChanged
+    public class Customer : INotifyPropertyChanged
     {
         private int _customerId;
         private string _customerName;
