@@ -15,39 +15,6 @@
         Loaded="Window_Loaded"
         Icon="\Icon\2_koM_icon.ico"
         >
-
-    <Window.Resources>
-        <SolidColorBrush x:Key="PrimaryBrush" Color="#f7a600" />
-        <SolidColorBrush x:Key="PrimaryFont" Color="Black" />
-        <Style x:Key="ButtonStyle"
-               TargetType="Button">
-
-            <Setter Property="Background" Value="#535353"/>
-            <Setter Property="FontSize" Value="12"/>
-            <Setter Property="BorderBrush" Value="White"/>
-            <Setter Property="BorderThickness" Value="1"/>
-            <Setter Property="FontWeight" Value="Bold"/>
-            <Setter Property="Foreground" Value="White"/>
-            <Setter Property="Cursor" Value="Hand"/>
-            <Setter Property="Height" Value="40"/>
-            <Setter Property="Width" Value="150"/>
-            <Setter Property="Template">
-                <Setter.Value>
-                    <ControlTemplate TargetType="{x:Type Button}">
-                        <Border Background="{TemplateBinding Background}" BorderBrush="White" BorderThickness="2">
-                            <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
-                        </Border>
-                    </ControlTemplate>
-                </Setter.Value>
-            </Setter>
-            <Style.Triggers>
-                <Trigger Property="IsMouseOver" Value="True">
-                    <Setter Property="Background" Value="#f7a600"/>
-                </Trigger>
-            </Style.Triggers>
-        </Style>
-    </Window.Resources>
-
     <Border Padding="1">
         <StackPanel Margin="0.2,0.2,-0.2,-41.6">
 
@@ -122,14 +89,19 @@
                                 <Button Style="{StaticResource ButtonStyle}"  Grid.Column="1" Grid.Row="0" x:Name="btnLoadImage" Content="Obejrzyj zdjęcie" HorizontalAlignment="Center" Margin="-5,5,0,5" VerticalAlignment="Bottom" Click="btnLoadImage_Click" />
                                 <Button Style="{StaticResource ButtonStyle}" Grid.Column="0" Grid.Row ="1" x:Name="btnCalculatePoints" Content="Analizuj zdjecie" HorizontalAlignment="Center" Margin="5,10,0,5" VerticalAlignment="Bottom" Click="btnCalculatePoints_Click" />
                                 <Button Style="{StaticResource ButtonStyle}" Grid.Column="1" Grid.Row="1" x:Name="btnCalculateProfilePoints" Content="Analizuj zdjecie z profilu" HorizontalAlignment="Center" Margin="-5,5,0,5" VerticalAlignment="Bottom" Click="btnCalculateProfilePoints_Click" />
-                                <TextBlock Margin="15,20,0,0" Text="Zmniejszenie rozdzielczości " Foreground="White" FontWeight="Bold" Grid.Column="0" Grid.Row="2"></TextBlock>
+                                <TextBlock Margin="15,10,0.2,0.4" Foreground="White" FontWeight="Bold" Grid.Column="0" Grid.Row="2"><Run Text="Zmniejszenie rozdzielczości"/><LineBreak/><Run Text="&#x9;  (x razy)"/><Run Text=" "/></TextBlock>
                                 <ComboBox Foreground="Black" x:Name="resizaCmb" Grid.Column="0" Grid.Row="2" Margin="0,41,48.2,5" Height="22" HorizontalAlignment="Right" Width="80" DropDownClosed="resizaCmb_DropDownClosed">
                                     <sys:Int32>1</sys:Int32>
                                     <sys:Int32>2</sys:Int32>
                                     <sys:Int32>4</sys:Int32>
                                     <sys:Int32>8</sys:Int32>
                                 </ComboBox>
-                                <CheckBox Grid.Row="2" x:Name="chbDisplayProfileImage" Margin="0,20,0,0" Foreground="White" FontSize="12" FontWeight="Bold" VerticalAlignment="Center" HorizontalAlignment="Center" Grid.Column="1">
+                                
+                                <CheckBox Grid.Row="2" x:Name="chbUseHoughTransform" Margin="0,-15,0,0" Foreground="White" FontSize="12" FontWeight="Bold" VerticalAlignment="Center" HorizontalAlignment="Center" Grid.Column="1" Checked="chbUseHoughTransform_Checked" Unchecked="chbUseHoughTransform_Unchecked">
+                                    <AccessText TextWrapping="Wrap"
+                                                Text="Ręczne wykrywanie źrenic" Height="38" Width="122"></AccessText>
+                                </CheckBox>
+                                <CheckBox Grid.Row="2" x:Name="chbDisplayProfileImage" Margin="0,60,0,0" Foreground="White" FontSize="12" FontWeight="Bold" VerticalAlignment="Center" HorizontalAlignment="Center" Grid.Column="1">
                                     <AccessText TextWrapping="Wrap"
                                                 Text="Wyświetlanie zdjęcia z profilu" Height="38" Width="122"></AccessText>
                                 </CheckBox>

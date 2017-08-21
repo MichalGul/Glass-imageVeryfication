@@ -14,7 +14,7 @@ namespace ImageVerification
 
         //Import analizy obrazu z biblioteki C++
         [DllImport("E:\\_PROJEKTY\\C++DLLtoC#\\FaceLandmarkDLL\\x64\\Debug\\FaceLandmarkDLL.dll", CallingConvention = CallingConvention.Cdecl)]
-        public static extern bool CalculateFrontFeaturePoints(int ID, bool ResizaImage, double resizeFactor);
+        public static extern bool CalculateFrontFeaturePoints(int ID, bool ResizaImage, double resizeFactor, bool useHoughTransformDetection);
 
         [DllImport("E:\\_PROJEKTY\\C++DLLtoC#\\FaceLandmarkDLL\\x64\\Debug\\FaceLandmarkDLL.dll", CallingConvention = CallingConvention.Cdecl)]
         public static extern bool CalculateProfileFeaturePoints(int ID);
@@ -58,7 +58,7 @@ namespace ImageVerification
                 // wait.ShowDialog();    
                 if (Utilities.resizeImage == false)
                 {
-                    if (CalculateFrontFeaturePoints(Int32.Parse(Utilities.currentID), Utilities.resizeImage, 1.0) == true)
+                    if (CalculateFrontFeaturePoints(Int32.Parse(Utilities.currentID), Utilities.resizeImage, 1.0,Utilities.useHoughTransoformPupilDetection) == true)
                     {
                         MessageBox.Show("Przetwarzanie zakończone.", "Info", MessageBoxButton.OK, MessageBoxImage.Information);
                         CloseAllImageWindows();
@@ -71,7 +71,7 @@ namespace ImageVerification
                 }
                 else if (Utilities.resizeImage == true)
                  {
-                    if (CalculateFrontFeaturePoints(Int32.Parse(Utilities.currentID), Utilities.resizeImage, Utilities.resizeFactor) == true)
+                    if (CalculateFrontFeaturePoints(Int32.Parse(Utilities.currentID), Utilities.resizeImage, Utilities.resizeFactor, Utilities.useHoughTransoformPupilDetection) == true)
                     {
                         MessageBox.Show("Przetwarzanie zakończone.", "Info", MessageBoxButton.OK, MessageBoxImage.Information);
                         CloseAllImageWindows();

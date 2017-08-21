@@ -222,13 +222,13 @@ namespace ImageVerification
 
         }
 
-
+      
         public void UpdateProfileDistances(double earNose, double eyeNose)
         {
             try
             {
                 //Akceptowanie punktów na obrazie - update bazy -> dziala
-                MySqlConnection connection = new MySqlConnection(Utilities.connectionString);         //ZAJRZYJ TAM --------------------------->
+                MySqlConnection connection = new MySqlConnection(Utilities.connectionString);         
             string updateQuerry = "Update Punkty_Profil SET Ucho_Nos=@val1, Oko_Nos=@val2 where id_klienta = " + Utilities.currentID;
             connection.Open();
             MySqlCommand prpCommand = new MySqlCommand(updateQuerry, connection);

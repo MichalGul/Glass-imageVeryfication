@@ -7,6 +7,10 @@ using System.Threading.Tasks;
 
 namespace ImageVerification.Model
 {
+
+    //TODO: INFO Caly kod komunikacji z baza danych jest w repozytoriach
+
+
     public interface ICustomerRepository
     {
 

@@ -20,6 +20,7 @@ namespace ImageVerification
         public static int markPointSize = 8;
         public static bool resizeImage = false;
         public static double resizeFactor = 0.0;
+        public static bool useHoughTransoformPupilDetection = false;
         // Błędny indeks punktu do przeniesienia
         public enum Index
         {

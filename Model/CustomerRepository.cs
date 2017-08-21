@@ -27,7 +27,7 @@ namespace ImageVerification.Model
         {
             //Podmiana klienta na danym miejsciu
             Customer customerToUpdate = customersBase.Where(C => C.CustomerId == selectedCustomer.CustomerId).FirstOrDefault();
-            customerToUpdate = selectedCustomer;
+            customerToUpdate = selectedCustomer; //zamiana miejscami do update
                   
             try
             {

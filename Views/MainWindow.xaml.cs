@@ -25,7 +25,7 @@ namespace ImageVerification
        
         //Import analizy obrazu z biblioteki C++       
         [DllImport("E:\\_PROJEKTY\\C++DLLtoC#\\FaceLandmarkDLL\\x64\\Debug\\FaceLandmarkDLL.dll", CallingConvention = CallingConvention.Cdecl)]
-        public static extern bool CalculateFrontFeaturePoints(int ID, bool ResizaImage, double resizeFactor);
+        public static extern bool CalculateFrontFeaturePoints(int ID, bool ResizaImage, double resizeFactor, bool useHoughTransformDetection);
 
         [DllImport("E:\\_PROJEKTY\\C++DLLtoC#\\FaceLandmarkDLL\\x64\\Debug\\FaceLandmarkDLL.dll", CallingConvention = CallingConvention.Cdecl)]
         public static extern bool CalculateProfileFeaturePoints(int ID);
@@ -144,6 +144,7 @@ namespace ImageVerification
 
         private void dataGrid_SelectedCellsChanged(object sender, SelectedCellsChangedEventArgs e)
         {
+            //zaznaczenie wybranego klienta
             selectedCustomer = dataGrid.SelectedItem as Customer;
 
             // Pobieranie ID zaznaczonego elementu         
@@ -324,6 +325,18 @@ namespace ImageVerification
             EditClient editCurrentClient = new EditClient();
             editCurrentClient.selectedCustomerToEdit = selectedCustomer;
             editCurrentClient.ShowDialog();
+        }
+
+        private void chbUseHoughTransform_Checked(object sender, RoutedEventArgs e)
+        {
+            Utilities.useHoughTransoformPupilDetection = true;
+            
+        }
+
+        private void chbUseHoughTransform_Unchecked(object sender, RoutedEventArgs e)
+        {
+            Utilities.useHoughTransoformPupilDetection = false;
+           
         }
     }
 }
