@@ -9,6 +9,9 @@ using System.Windows;
 
 namespace ImageVerification.Model
 {
+    /// <summary>
+    /// Feature profile and front points data model for managing data in database
+    /// </summary>
    public class FeaturePoint : INotifyPropertyChanged
     {
 
@@ -39,7 +42,9 @@ namespace ImageVerification.Model
             }
         }
 
-        // Obsługa zmiany wartości
+         /// <summary>
+       /// Implementing INotify interface
+       /// </summary>
         public event PropertyChangedEventHandler PropertyChanged;
         private void RaisePropertyChanged(
             [CallerMemberName] string caller = " ")

@@ -13,6 +13,9 @@ using System.Windows.Shapes;
 
 namespace ImageVerification
 {
+    /// <summary>
+    /// Manages feature points data carried in database
+    /// </summary>
     public class FeaturePointsRepository : INotifyPropertyChanged
     {
         public static ObservableCollection<FeaturePoint> frontFeaturePointsCollection;
@@ -110,10 +113,9 @@ namespace ImageVerification
             }
         }
 
-
-
-
-        // Obsługa zmiany wartości
+        /// <summary>
+        /// Implementing INotifyPropertyChanged interface
+        /// </summary>
         public event PropertyChangedEventHandler PropertyChanged;
         private void RaisePropertyChanged(
             [CallerMemberName] string caller =" ")
@@ -125,23 +127,32 @@ namespace ImageVerification
 
         }
 
+        /// <summary>
+        /// Passes Front points of specified Customer
+        /// </summary>
+        /// <returns> Front points collection for specified customer </returns>
         public ObservableCollection<FeaturePoint> GetFrontPoints()
         {
             LoadFrontPointsFormDatabaseForSelectedCustomer();
             return frontFeaturePointsCollection;
 
         }
+        /// <summary>
+        /// Passes Profile points of specified in Utilities.selectedID customer
+        /// </summary>
+        /// <returns> Profile points collection for specified customer</returns>
         public ObservableCollection<FeaturePoint> GetProfilePoints()
         {
             LoadProfilePointsFormDatabaseForSelectedCustomer();
             return profileFeaturePointsCollection;
 
         }
-
+        /// <summary>
+        /// Update selected customer points and send that data to database
+        /// </summary>
+        /// <param name="selectedCustomerPoints">selected customer points to update</param>
         public void UpdateFrontPointsData(ObservableCollection<FeaturePoint> selectedCustomerPoints)
         {
-
-
             // Po przesunieciu i maniu współczynnika skalowania będzie trzeba przeliczyć odległości ale do tego już sa wszystkie dane w bazie wiec wystarczy je brać         
             try
             {
@@ -176,23 +187,21 @@ namespace ImageVerification
                 int result = prpCommand.ExecuteNonQuery();
                 connection.Close();
 
-
             }
             catch (Exception ex)
             {
                 MessageBox.Show("Błąd aktualizowania bazy punktów. " + ex.Message, "Błąd", MessageBoxButton.OK, MessageBoxImage.Error);
-            }
-    
-
+            }  
         }
 
+        /// <summary>
+        /// Update selected customer profile points and send that data to appropriate table in database
+        /// </summary>
+        /// <param name="selectedCustomerPoints">selected customer points collection to update</param>
         public void UpdateProfilePoints(ObservableCollection<FeaturePoint> selectedCustomerPoints)
         {
-
             try
             {
-
-
                 //Akceptowanie punktów na obrazie - update bazy -> dziala
                 MySqlConnection connection = new MySqlConnection(Utilities.connectionString);         //ZAJRZYJ TAM --------------------------->
                 string updateQuerry = "Update Punkty_Profil SET Ucho_X=@val1, Ucho_Y=@val2, Nos_X=@val3, Nos_Y=@val4, Oko_X=@val5, Oko_Y=@val6 where id_klienta = " + Utilities.currentID;
@@ -210,10 +219,8 @@ namespace ImageVerification
                 prpCommand.Parameters.AddWithValue("@val6", GetPointByName(selectedCustomerPoints, "Oko").Y);
 
                 int result = prpCommand.ExecuteNonQuery();
-
                 connection.Close();
 
- 
             }
             catch (Exception ex)
             {
@@ -221,13 +228,17 @@ namespace ImageVerification
             }
 
         }
-
-      
+  
+        /// <summary>
+        /// Update calculated profile distances of the client after modifications
+        /// </summary>
+        /// <param name="earNose"> Distance between ear and nose</param>
+        /// <param name="eyeNose">Distance between eye and nose</param>
         public void UpdateProfileDistances(double earNose, double eyeNose)
         {
             try
             {
-                //Akceptowanie punktów na obrazie - update bazy -> dziala
+                //Akceptowanie punktów na obrazie
                 MySqlConnection connection = new MySqlConnection(Utilities.connectionString);         
             string updateQuerry = "Update Punkty_Profil SET Ucho_Nos=@val1, Oko_Nos=@val2 where id_klienta = " + Utilities.currentID;
             connection.Open();
@@ -252,7 +263,12 @@ namespace ImageVerification
 
 }
 
-
+        /// <summary>
+        /// Manage acces to specified points in feature points collections
+        /// </summary>
+        /// <param name="collection">Collection of the points</param>
+        /// <param name="pointName">Name of the selected points</param>
+        /// <returns>Specified feature point</returns>
         private Point GetPointByName(ObservableCollection<FeaturePoint> collection, string pointName)
         {
             Point selectedPoint = new Point(0, 0);
@@ -269,8 +285,9 @@ namespace ImageVerification
             return selectedPoint;
         }
 
-
-
+        /// <summary>
+        /// Load front feature points from database for selected customer
+        /// </summary>
         public void LoadFrontPointsFormDatabaseForSelectedCustomer()
         {
             var faceFeaturePoints = new ObservableCollection<FeaturePoint>();
@@ -330,28 +347,26 @@ namespace ImageVerification
 
 
                 }
-                //Zamkniecie polaczenia
                 connection.Close();
             }
             catch (MySqlException ex)
             {
                 MessageBox.Show("Błąd odczytu z bazy danych. Proszę sprawdzić ustawienia połączenia. " + ex.Message, "Błąd", MessageBoxButton.OK, MessageBoxImage.Error);
-                throw ex;
+                return;
             }
             finally
             {
-
-
-                connection.Close();
+                //connection.Close();
                 frontFeaturePointsCollection = faceFeaturePoints;
             }
 
 
         }
 
-
-
-
+        /// <summary>
+        /// Extract maximum scale factor of the image from database to adjust calculation to original image size
+        /// </summary>
+        /// <returns>scale factor of the image</returns>
         public static double GetFullScaleFactorFromPointsDatabase()
         {
 
@@ -380,6 +395,10 @@ namespace ImageVerification
 
         }
 
+        /// <summary>
+        /// Extracting profile scale factor of the image for calculating real distance of points
+        /// </summary>
+        /// <returns>Profile points scale factor</returns>
         public static double GetProfileScaleFactor()
         {
             double scaleFactor = 0;
@@ -404,8 +423,9 @@ namespace ImageVerification
 
         }
 
-
-
+        /// <summary>
+        /// Load profile feature points from database for selected customer
+        /// </summary>
         public void LoadProfilePointsFormDatabaseForSelectedCustomer()
         {
             var profileFeaturePoints = new ObservableCollection<FeaturePoint>();
@@ -445,8 +465,6 @@ namespace ImageVerification
                     ScaleFactor = (double)results["WspSkalowania"];
                     MaxScaleFactor = 0;
                     CustomerId = (int)results["Id_klienta"];
-
-
 
                 }
 

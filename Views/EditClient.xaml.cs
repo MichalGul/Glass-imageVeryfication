@@ -12,11 +12,10 @@ using ImageVerification.Model;
 namespace ImageVerification
 {
     /// <summary>
-    /// Interaction logic for EditClient.xaml
+    /// Interaction logic for Edit Customer Window
     /// </summary>
     public partial class EditClient : Window
     {
-
 
         public Customer selectedCustomerToEdit;
         public CustomerRepository customerRepository;
@@ -27,9 +26,6 @@ namespace ImageVerification
         byte[] profileImageData;
       //  bool updateDatabaseWithPhoto = false;
        // bool updateDatabaseWithProfilePhoto = false;
-
-    
-
         public EditClient()
         {
             InitializeComponent();
@@ -38,26 +34,21 @@ namespace ImageVerification
 
         private void EditClient_Loaded(object sender, RoutedEventArgs e)
         {
-            //Wykorzystanie drzewa bindingu kazda z kontrolek bedzie szukala tego co ma sobie przypisac bo nazwie bindingu wpisanego w xamlu
+            //Using databinding tree every control on window will find its own property based on name
             this.DataContext = selectedCustomerToEdit;
         }
 
         private void Window_Loaded(object sender, RoutedEventArgs e)
         {
-
             try
             {
-
                 ImageConverter convertImage = new ImageConverter();             
                 imageCtr.Source = convertImage.ConvertByteArrayToBitmap(selectedCustomerToEdit.FrontImage);
                 profileImageCtr.Source = convertImage.ConvertByteArrayToBitmap(selectedCustomerToEdit.ProfileImage);
-                //Przypisanie poczatkowych wartosci w przypadku gdy nie bedziemy wymienic zdjecia
+
+                //In case of not chaning picture we left oryginal pictures
                 frontImageData = selectedCustomerToEdit.FrontImage;
                 profileImageData = selectedCustomerToEdit.ProfileImage;
-
-
-
-
             }
             catch(Exception ex)
             {
@@ -91,6 +82,11 @@ namespace ImageVerification
             this.Close();
         }
 
+        /// <summary>
+        /// Setting printing details of the document
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void Printbtn_Click(object sender, RoutedEventArgs e)
         {
 
@@ -100,16 +96,11 @@ namespace ImageVerification
             //Creating fixed document
             FixedDocument document = new FixedDocument();
             document.DocumentPaginator.PageSize = new Size(printDialog.PrintableAreaWidth, printDialog.PrintableAreaHeight);
-            //Stworzenie strony
+            //Creating page
             FixedPage pageOne = new FixedPage();
             pageOne.Width = document.DocumentPaginator.PageSize.Width;
             pageOne.Height = document.DocumentPaginator.PageSize.Height;
-
-            //Dodawanie elementow na strone
-            //Image printImage = new Image();
-            //printImage.Source = image;
-            //pageOne.Children.Add((UIElement)imageCtr);
-
+   
             TextBlock tbTitle = new TextBlock();
             tbTitle.Text = "Dane Klienta";
             tbTitle.FontSize = 28;
@@ -136,8 +127,6 @@ namespace ImageVerification
             FixedPage.SetLeft(printProfileControl, 420);
             FixedPage.SetTop(printProfileControl, 70);
             pageOne.Children.Add((UIElement)printProfileControl);
-
-
 
             TextBlock Id = new TextBlock();
             Id.Text = "ID: " + Idtbox.Text;
@@ -231,16 +220,20 @@ namespace ImageVerification
             pageOne.Arrange(new Rect(new Point(), (new Size (printDialog.PrintableAreaWidth, printDialog.PrintableAreaHeight))));
             pageOne.UpdateLayout();
             
-            //Dodawanie strony do dokumentu
+            //Adding page to document
             PageContent pageOneContent = new PageContent();
             ((IAddChild)pageOneContent).AddChild(pageOne);
             document.Pages.Add(pageOneContent);
 
-            //drukowanie
+            //printing
             printDialog.PrintDocument(document.DocumentPaginator, "Dane Klienta: " + imietbox.Text + " " + nazwiskotbox.Text);
 
         }
-
+        /// <summary>
+        /// Opening search dialog for new photo
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void SearchDialogbtn_Click(object sender, RoutedEventArgs e)
         {
             
@@ -273,11 +266,13 @@ namespace ImageVerification
 
         }
 
-
+        /// <summary>
+        /// Updating edited customer
+        /// </summary>
         private void UpdateCustomer()
         {
             customerRepository = new CustomerRepository();
-            //Przypisanie zdjec - reszta wartosci w obiekcie selected Customer zmienia sie przy pomocy TwoWay bindingu
+            //Binding pictures rest of data is binded by two way binding in XAML
             selectedCustomerToEdit.FrontImage = frontImageData;
             selectedCustomerToEdit.ProfileImage = profileImageData;
             customerRepository.UpdateCustomer(selectedCustomerToEdit);
@@ -286,8 +281,7 @@ namespace ImageVerification
 
 
         private void SearchProfileDialogbtn_Click(object sender, RoutedEventArgs e)
-        {
-         
+        {        
                 OpenFileDialog op = new OpenFileDialog();
                 op.Title = "Select a picture";
                 op.Filter = "JPEG (*.jpg;*.jpeg)|*.jpg;*.jpeg";
@@ -311,18 +305,9 @@ namespace ImageVerification
                     
                 }
                 else
-                {
-                    
+                {                  
                     return;
-                }
-
-            
+                }        
         }
-
-
-
-
-
-
     }
 }

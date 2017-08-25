@@ -9,6 +9,9 @@ using System.Windows.Media.Imaging;
 
 namespace ImageVerification.Model
 {
+    /// <summary>
+    /// Customer data model for managing data in the database
+    /// </summary>
     public class Customer : INotifyPropertyChanged
     {
         private int _customerId;
@@ -232,9 +235,9 @@ namespace ImageVerification.Model
 
 
 
-
-
-        // Obsługa zmiany wartości
+       /// <summary>
+       /// Implementing INotify interface
+       /// </summary>
         public event PropertyChangedEventHandler PropertyChanged;
         private void RaisePropertyChanged(
             [CallerMemberName] string caller = " ")

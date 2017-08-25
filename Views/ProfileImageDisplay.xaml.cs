@@ -34,7 +34,7 @@ namespace ImageVerification
 
         double eyeNoseDistance;
         double earNoseDistance;
-        //Odniesienia do wyswietlanego obrazu na canvasie(do skalowania pixeli)
+        
         ImageSource imageSource;
         BitmapImage bitmapImage;
 
@@ -66,6 +66,11 @@ namespace ImageVerification
             InitializeComponent();
         }
 
+        /// <summary>
+        /// Loading image of specified customer to display
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void Window_Loaded(object sender, RoutedEventArgs e)
         {
 
@@ -106,6 +111,11 @@ namespace ImageVerification
            // tboxTest2.Text = pixelMousePositionY.ToString();
         }
 
+        /// <summary>
+        /// Display all profile feature on image
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void btnShowMark_Click(object sender, RoutedEventArgs e)
         {
             profileFeaturePointsRepository = new FeaturePointsRepository();
@@ -145,6 +155,11 @@ namespace ImageVerification
             Mouse.OverrideCursor = Cursors.Hand;
         }
 
+        /// <summary>
+        /// Reseting and clearing positions of profile feature points
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void btnClear_Click(object sender, RoutedEventArgs e)
         {
             if (profilefeaturePoints == null)
@@ -161,12 +176,14 @@ namespace ImageVerification
             }
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void btnApply_Click(object sender, RoutedEventArgs e)
         {
-
-            //  TODO: Moze nie dawać mozliwosci rysowania punktow tylko po prostu przesuwanie tych co juz sa
-            // Po przesunieciu i maniu współczynnika skalowania będzie trzeba przeliczyć odległości ale do tego już sa wszystkie dane w bazie wiec wystarczy je brać
-            //WSP skalowania jest i wspolrzedne -> jakas metode recalculate ktora tu sie wywola po nacisnieciu guzika 
+          
             if (profilefeaturePoints == null)
             {
                 MessageBox.Show("Proszę wyświetlić punkty na obrazie", "Błąd");
@@ -175,35 +192,22 @@ namespace ImageVerification
             }
             try
             {
-
                 Recalculate();
                 profileFeaturePointsRepository.UpdateProfilePoints(profilefeaturePoints);
                 profileFeaturePointsRepository.UpdateProfileDistances(earNoseDistance, eyeNoseDistance);
-
-
 
             }
             catch (Exception ex)
             {
                 MessageBox.Show(ex.Message);
             }
-
-
-
-
-
-
         }
-
         private void btnCancel_Click(object sender, RoutedEventArgs e)
         {
             this.Close();
         }
 
-        
-
-
-
+  
         #region Moving Circles events
 
         private void Circle_MouseLeftButtonDown(object sender, MouseButtonEventArgs e)
@@ -282,6 +286,9 @@ namespace ImageVerification
 
         #region Utils
 
+        /// <summary>
+        /// Recalculate changed distances on image
+        /// </summary>
         private void Recalculate()
         {
             double scaleFactor = FeaturePointsRepository.GetProfileScaleFactor();
@@ -290,7 +297,7 @@ namespace ImageVerification
             Point nose = GetPointByName(profilefeaturePoints, "Nos");
             Point eye = GetPointByName(profilefeaturePoints, "Oko");
 
-            //Odległość jest liczona poprawnie
+           
             selectedCustomerToRecalculate.ProfileNoseEarDistance = Math.Round((nose - ear).Length * scaleFactor, 2);
             selectedCustomerToRecalculate.ProfileNoseEyeDistance = Math.Round((nose - eye).Length * scaleFactor, 2);
 
@@ -306,7 +313,12 @@ namespace ImageVerification
 
 
 
-        // Util -> metoda do rysowania elips na ekranie -> narazie testowa poniewaz te punkty nie sa takie jak potrzeba
+        /// <summary>
+        /// Draw point on image at passed coordinates
+        /// </summary>
+        /// <param name="X">X coordinate</param>
+        /// <param name="Y">Y coordinage</param>
+        /// <param name="scaleToCanvas">scale point to canvas coordinates</param>
         private void DrawCircle(double X, double Y, bool scaleToCanvas)
         {
             // Tworzenie elipsy na obrazku
@@ -338,7 +350,12 @@ namespace ImageVerification
             }
 
         }
-
+        /// <summary>
+        /// Draw point on image control with uniform setting
+        /// </summary>
+        /// <param name="X">X coordinate</param>
+        /// <param name="Y">Y coordinate</param>
+        /// <param name="scaleToCanvas">scale point to canvas coordinates</param>
         private void DrawCircleUniform(double X, double Y, bool scaleToCanvas)
         {
             // Tworzenie elipsy na obrazku
@@ -376,7 +393,12 @@ namespace ImageVerification
 
 
       
-
+        /// <summary>
+        /// Get point form collection by its name
+        /// </summary>
+        /// <param name="collection">Collection of points</param>
+        /// <param name="pointName">point name</param>
+        /// <returns></returns>
         private Point GetPointByName(ObservableCollection<FeaturePoint> collection, string pointName)
         {
             Point selectedPoint = new Point(0, 0);
@@ -393,13 +415,8 @@ namespace ImageVerification
 
             return selectedPoint;
 
-
         }
-
-
-
-
-
+  
         #endregion
 
     }

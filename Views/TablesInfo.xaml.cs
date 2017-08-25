@@ -30,6 +30,11 @@ namespace ImageVerification
             InitializeComponent();
         }
 
+        /// <summary>
+        /// Handling loading data in window
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void Window_Loaded(object sender, RoutedEventArgs e)
         {
             pointsData = new PointsTableRepository();
@@ -37,7 +42,6 @@ namespace ImageVerification
             dgridPoints.DataContext = pointsData.GetFrontPointsDataTable();
             dgridProfilePoints.DataContext = pointsData.GetProfilePointsDataTable();
            
-
 
             foreach (DataGridColumn column in dgridPoints.Columns)
                 {                        

@@ -18,23 +18,19 @@ namespace ImageVerification
     /// <summary>
     /// Interaction logic for ImageDisplay.xaml
     /// </summary>
-    /// 
     public partial class ImageDisplay : Window
     {
         public Customer selectedCustomerToRecalculate;
         public CustomerRepository customerRepository;
-
         FeaturePointsRepository frontFeaturePointsRepository;
-
-        //Struktura słownikowa do zapamiętywania początkowych współrzędnych punktów      
+           
         ObservableCollection<FeaturePoint> originalPoints;
-        //Stworzenie listy aktualnych punktow
+        //Collection of actual points
         ObservableCollection<FeaturePoint> featurePoints; 
         
         //Odniesienia do wyswietlanego obrazu na canvasie(do skalowania pixeli)
         ImageSource imageSource;
-        BitmapImage bitmapImage;
-        //Poczatkowa pozycja elementu przed przemieszczeniem
+        BitmapImage bitmapImage; 
         private Point startingPosition;
         //Odwołanie do kliknietego elementu
         private UIElement lastClickedUIElement = null;
@@ -52,27 +48,21 @@ namespace ImageVerification
         {
             InitializeComponent();
         }
+     
         /// <summary>
-        /// Loading selected image from database
+        /// Display image on image control
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>
         private void Window_Loaded(object sender, RoutedEventArgs e)
         {
-
             customerRepository = new CustomerRepository();
-
             try
             {
-
                 ImageConverter byteArrayToImage = new ImageConverter();
-                imageDisplay.Source = byteArrayToImage.ConvertByteArrayToBitmap(customerRepository.GetCustomerFrontImageById(Convert.ToInt32(Utilities.currentID)));
-                //Skalowanie wspolrzednych na pixele
-                imageSource = imageDisplay.Source;
-                //Pobieranie bitmapy z kontrolki image
-                bitmapImage = (BitmapImage)imageSource;
-
-               
+                imageDisplay.Source = byteArrayToImage.ConvertByteArrayToBitmap(customerRepository.GetCustomerFrontImageById(Convert.ToInt32(Utilities.currentID)));               
+                imageSource = imageDisplay.Source;            
+                bitmapImage = (BitmapImage)imageSource;            
             }
             catch(MySqlException ex)
             {
@@ -81,9 +71,7 @@ namespace ImageVerification
             }
 
         }
-
-        
-       
+     
         /// <summary>
         /// Update changes to database
         /// </summary>
@@ -91,40 +79,31 @@ namespace ImageVerification
         /// <param name="e"></param>
         private void btnApply_Click(object sender, RoutedEventArgs e)
         {
-            
-            // Po przesunieciu i maniu współczynnika skalowania będzie trzeba przeliczyć odległości ale do tego już sa wszystkie dane w bazie wiec wystarczy je brać         
+                            
             try
             {
                 if (pointsDataGrid.Items.Count < 1)
                 {
-                    MessageBox.Show("Proszę wyświetlić punkty na obrazie", "Błąd");
+                    MessageBox.Show("Proszę wyświetlić punkty na obrazie", "Błąd",MessageBoxButton.OK,MessageBoxImage.Warning);
                     return;
                 }
                    
-
                 frontFeaturePointsRepository.UpdateFrontPointsData(featurePoints);       
-                Recalculate();
-
-
-               
+                Recalculate();             
             }
             catch(Exception ex)
             {
                 MessageBox.Show("Proszę wyświetlic punkty na obrazie " + ex.Message, "Błąd", MessageBoxButton.OK, MessageBoxImage.Error);
             }
 
-
-
         }
-
-        //TODO: Moze??-> jesli bede chciał rysować nowe punkty no wystarczy napisac funkcje ktora sie wywoła w funkcji ktora sie dzieje po nacisnieciu myszki na obrazie lub canvas tam gdzie klikne myszka pobierze te wspolrzedne
-        // doda do struktury słownikowej i na nowo przepisze i zrefreshuje datagrid ale nowe punkty nie będą kompatybilne z bazą, która stoi???
+       
         private void btnCancel_Click(object sender, RoutedEventArgs e)
         {
             this.Close();
         }
 
-        //  Resetowanie położenia punktow/ czyszczenie pol
+        //  Reseting points position
         private void btnClear_Click(object sender, RoutedEventArgs e)
         {
             if (featurePoints == null)
@@ -150,11 +129,9 @@ namespace ImageVerification
         {
             frontFeaturePointsRepository = new FeaturePointsRepository();
             featurePoints = frontFeaturePointsRepository.GetFrontPoints();
-
-            //Zapamietanie punktów przed przesuwaniem
-            originalPoints = featurePoints;
-            
-            // Namalowanie punktow z bazy na obrazie          
+            //Saving points before manipulating position
+            originalPoints = featurePoints;           
+            // Drawing points on image         
             DrawCircleUniform(GetPointByName(featurePoints, "Nos").X, GetPointByName(featurePoints, "Nos").Y, true);
             DrawCircleUniform(GetPointByName(featurePoints, "LSkron").X, GetPointByName(featurePoints, "LSkron").Y, true);
             DrawCircleUniform(GetPointByName(featurePoints, "PSkron").X, GetPointByName(featurePoints, "PSkron").Y, true);
@@ -162,11 +139,10 @@ namespace ImageVerification
             DrawCircleUniform(GetPointByName(featurePoints, "LPol").X, GetPointByName(featurePoints, "LPol").Y, true);
             DrawCircleUniform(GetPointByName(featurePoints, "PPol").X, GetPointByName(featurePoints, "PPol").Y, true);
             DrawCircleUniform(GetPointByName(featurePoints, "POko").X, GetPointByName(featurePoints, "POko").Y, true);
-
-            // Wyswietlenie punktow w kontrolce data Grid krok 3
+         
             pointsDataGrid.ItemsSource = featurePoints;
 
-            //Dodanie mozliwości ruchu dla kół na obrazie
+            //Adding move events to every point on image
             for (int i = 1; i<= featurePoints.Count(); i++)
             {
                 //Dodanie do każdej elipsy mouse UP i mouse Down i mouse move (ten sam event dla kazdego punktu od 1 bo 0 dzieckiem jest obrazek)
@@ -211,7 +187,7 @@ namespace ImageVerification
 
             Point nose = GetPointByName(featurePoints, "Nos");
 
-            //Odległość           
+            //Distances           
             selectedCustomerToRecalculate.PupilDistance =  Math.Round((rightEye - leftEye).Length * scaleFactor,2);
             selectedCustomerToRecalculate.TempleWidth = Math.Round((rightTemple - leftTemple).Length * scaleFactor,2);
             selectedCustomerToRecalculate.FaceWidth = Math.Round((rightCheek - leftCheek).Length * scaleFactor,2);
@@ -283,9 +259,7 @@ namespace ImageVerification
         }
         private void Circle_MouseLeftButtonUp(object sender, MouseButtonEventArgs e)
         {
-            //TBD pobranie wspolrzednych i zapisanie ich do kolekcji feature points
-            // identyfikacja ktory punkt klikamy?? - po połozeniu początkowych
-
+         
             //jezeli w obrebie punktu wykona sie button up a nei trafilo sie w zakres
             if (indexOfPoint == (int)Utilities.Index.NotValidIndex)
             {
@@ -308,7 +282,12 @@ namespace ImageVerification
 
 
         #region Utils
-        // Util -> metoda do rysowania punktów na ekranie 
+        /// <summary>
+        /// Drawing points on image
+        /// </summary>
+        /// <param name="X">X coordinate of point</param>
+        /// <param name="Y"> Y coordinate of point</param>
+        /// <param name="scaleToCanvas"> scaling points to canvas</param>
         private void DrawCircle(double X, double Y, bool scaleToCanvas)
         {
             // Tworzenie elipsy na obrazku
@@ -341,7 +320,12 @@ namespace ImageVerification
             }
 
         }
-
+        /// <summary>
+        /// Drawing point on image with uniform image control setting
+        /// </summary>
+        /// <param name="X"></param>
+        /// <param name="Y"></param>
+        /// <param name="scaleToCanvas"></param>
         private void DrawCircleUniform(double X, double Y, bool scaleToCanvas)
         {
             // Tworzenie elipsy na obrazku
@@ -378,7 +362,12 @@ namespace ImageVerification
         }
 
        
-
+        /// <summary>
+        /// Extract point form collection by its name property
+        /// </summary>
+        /// <param name="collection"> Collection of points</param>
+        /// <param name="pointName"> Specified point name</param>
+        /// <returns></returns>
         private Point GetPointByName(ObservableCollection<FeaturePoint> collection, string pointName)
         {
             Point selectedPoint = new Point(0, 0);
@@ -400,22 +389,16 @@ namespace ImageVerification
 
         private void imageDisplay_MouseLeftButtonDown(object sender, MouseButtonEventArgs e)
         {
-
             //Rysowanie na obrazku
             //TODO: !!!Wazne -> gdy punkty rysuje wzgledem canvasu a nie kontrolki image to wspolrzedne sa prawidłowe
             // DrawCircle(e.GetPosition(Cnv).X, e.GetPosition(Cnv).Y,false);
-
             //Skalowanie wspolrzednych na pixele
             ImageSource imageSource = imageDisplay.Source;
             //Pobieranie bitmapy z kontrolki image
             BitmapImage bitmapImage = (BitmapImage)imageSource;
             //Przeskalowywanie rozmiarow kontrolni image na pixele
             double pixelMousePositionX = e.GetPosition(imageDisplay).X * bitmapImage.PixelWidth / imageDisplay.ActualWidth;
-            double pixelMousePositionY = e.GetPosition(imageDisplay).Y * bitmapImage.PixelHeight / imageDisplay.ActualHeight;
-            // Wypisanie wspolrzednych postawienie elipsy
-          //  tboxTest.Text = pixelMousePositionX.ToString();
-           // tboxTest2.Text = pixelMousePositionY.ToString();
-
+            double pixelMousePositionY = e.GetPosition(imageDisplay).Y * bitmapImage.PixelHeight / imageDisplay.ActualHeight;              
         }
 
 

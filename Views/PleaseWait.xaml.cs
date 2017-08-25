@@ -6,13 +6,12 @@ using System.Windows;
 namespace ImageVerification
 {
     /// <summary>
-    /// Interaction logic for PleaseWait.xaml
+    /// Interaction logic for PleaseWait.xaml window
     /// </summary>
     public partial class PleaseWait : Window
     {
       
-
-        //Import analizy obrazu z biblioteki C++
+        //Importing extern C++ library
         [DllImport("E:\\_PROJEKTY\\C++DLLtoC#\\FaceLandmarkDLL\\x64\\Debug\\FaceLandmarkDLL.dll", CallingConvention = CallingConvention.Cdecl)]
         public static extern bool CalculateFrontFeaturePoints(int ID, bool ResizaImage, double resizeFactor, bool useHoughTransformDetection);
 
@@ -27,6 +26,11 @@ namespace ImageVerification
             InitializeComponent();
         }
 
+        /// <summary>
+        /// Creating background worker on loading window
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void Window_Loaded(object sender, RoutedEventArgs e)
         {
             BackgroundWorker worker = new BackgroundWorker();
@@ -38,16 +42,18 @@ namespace ImageVerification
 
         private void Worker_RunWorkerCompleted(object sender, RunWorkerCompletedEventArgs e)
         {
-            //Operacja na zakonczenie Obliczen       
+            //At the end of calculation      
             CloseWindow();
             
         }
 
+        /// <summary>
+        /// Perform calculations of front feature on background
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void Worker_DoWork(object sender, DoWorkEventArgs e)
         {
-
-            //Wykonywanie obliczen
-
             if (Utilities.currentID == "")
             {
                 return;

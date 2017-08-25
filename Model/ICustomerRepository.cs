@@ -7,17 +7,17 @@ using System.Threading.Tasks;
 
 namespace ImageVerification.Model
 {
+        /// <summary>
+        /// Customer data repository interface
+        /// </summary>
+         public interface ICustomerRepository
 
-    //TODO: INFO Caly kod komunikacji z baza danych jest w repozytoriach
+         {
+
+            ObservableCollection<Customer> GetCustomers();
+            void UpdateCustomer(Customer selectedCustomer);
+            void DeleteCustomer(Customer selectedCustomer);
 
 
-    public interface ICustomerRepository
-    {
-
-        ObservableCollection<Customer> GetCustomers();
-        void UpdateCustomer(Customer selectedCustomer);
-        void DeleteCustomer(Customer selectedCustomer);
-
-
-    }
+         }
 }

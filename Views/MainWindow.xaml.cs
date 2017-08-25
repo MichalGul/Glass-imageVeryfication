@@ -20,10 +20,10 @@ namespace ImageVerification
         private ObservableCollection<Customer> Customers;
         ICustomerRepository customersRepository;
 
-       //Id zaznaczonego rekordu
+       //Id of selected record
         string selectedID = "";
        
-        //Import analizy obrazu z biblioteki C++       
+        //Import C++ library for image analysis      
         [DllImport("E:\\_PROJEKTY\\C++DLLtoC#\\FaceLandmarkDLL\\x64\\Debug\\FaceLandmarkDLL.dll", CallingConvention = CallingConvention.Cdecl)]
         public static extern bool CalculateFrontFeaturePoints(int ID, bool ResizaImage, double resizeFactor, bool useHoughTransformDetection);
 
@@ -34,9 +34,9 @@ namespace ImageVerification
         public static extern void CloseAllImageWindows();
 
 
-        //TODO: Udokumentowac jakoś kod
+       
         //TODO: Napisać jakaś instrukcje obsługi
-        //TODO: Ułożenie interfejsu
+     
 
 
         public MainWindow()
@@ -45,6 +45,9 @@ namespace ImageVerification
           
         }
        
+        /// <summary>
+        /// Loading customers data from database to repository
+        /// </summary>
         private void LoadData()
         {
             customersRepository = new CustomerRepository();
@@ -60,11 +63,8 @@ namespace ImageVerification
         /// <param name="e"></param>
         private void btnExecute_Click(object sender, RoutedEventArgs e)
         {
-
             DatabaseConnectionSettings settings = new DatabaseConnectionSettings();
-            settings.ShowDialog();
-           
-
+            settings.ShowDialog();           
         }
         /// <summary>
         /// Load image of selected record
@@ -83,16 +83,13 @@ namespace ImageVerification
             else
             {
                 if (chbDisplayProfileImage.IsChecked == true)
-                {
-                    //Wyświetl okno do zdjęcia z profilu
+                {                
                     ProfileImageDisplay showProfileImage = new ProfileImageDisplay();
                     showProfileImage.selectedCustomerToRecalculate = selectedCustomer;
                     showProfileImage.ShowDialog();
-
                 }
                 else
-                {
-                    //Otworzenie nowego do zdjecia z frontu
+                {                  
                     ImageDisplay showimage = new ImageDisplay();
                     showimage.selectedCustomerToRecalculate = selectedCustomer;
                     showimage.ShowDialog();
@@ -109,8 +106,7 @@ namespace ImageVerification
             
                 LoadData();                              
                 dataGrid.ItemsSource = Customers;
-
-                //Ustawienie nazw kolumn
+                //Setting proper column names
                 dataGrid.Columns[0].Header = "Id";
                 dataGrid.Columns[1].Header = "Imię";
                 dataGrid.Columns[2].Header = "Nazwisko";
@@ -141,7 +137,11 @@ namespace ImageVerification
           
         }
 
-
+        /// <summary>
+        /// Managing selected customer to edit, calulate or update
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void dataGrid_SelectedCellsChanged(object sender, SelectedCellsChangedEventArgs e)
         {
             //zaznaczenie wybranego klienta
@@ -173,15 +173,9 @@ namespace ImageVerification
        
 
         private void btnInfo_Click(object sender, RoutedEventArgs e)
-        {
-
-            //CustomerRepository customersService = new CustomerRepository();
-           // ObservableCollection<Customer> customers = customersService.GetCustomers();
-
-
+        {         
              About info = new About();
-            info.ShowDialog();
-
+             info.ShowDialog();
         }
 
         private void dataGrid_SelectionChanged(object sender, SelectionChangedEventArgs e)
@@ -189,7 +183,11 @@ namespace ImageVerification
 
         }
 
-        // Wykorzystanie kodu C++ w celu obliczenia cech i odległości danego klienta
+        /// <summary>
+        /// Invoke calculation of front feature points. Call extern c++ library
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void btnCalculatePoints_Click(object sender, RoutedEventArgs e)
         {
 
@@ -197,6 +195,7 @@ namespace ImageVerification
             wait.ShowDialog();  
 
         }
+
         /// <summary>
         /// Perform calculation on profile image forma database. Call extern c++ library
         /// </summary>
@@ -223,13 +222,22 @@ namespace ImageVerification
             }
         }
 
+        /// <summary>
+        /// Opening table info window
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void btnTableInfo_Click(object sender, RoutedEventArgs e)
         {
             TablesInfo tableInf = new TablesInfo();
             tableInf.ShowDialog();
         }
        
-            
+        /// <summary>
+        /// Handling double click event on row
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void Cell_DoubleClick(object sender, MouseButtonEventArgs e)
         {
             
@@ -265,6 +273,11 @@ namespace ImageVerification
 
         }
 
+        /// <summary>
+        /// Handling delete customer event button
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void btnDelete_Click(object sender, RoutedEventArgs e)
         {
             if (Utilities.currentID == "")
@@ -285,7 +298,11 @@ namespace ImageVerification
 
         }
 
-         
+         /// <summary>
+         /// Handling scaling image feature
+         /// </summary>
+         /// <param name="sender"></param>
+         /// <param name="e"></param>
         private void resizaCmb_DropDownClosed(object sender, EventArgs e)
         {
            
@@ -310,29 +327,37 @@ namespace ImageVerification
                     break;
 
             }
-           // MessageBox.Show(Utilities.resizeImage.ToString() + "   " + Utilities.resizeFactor.ToString());
-         
-           
-
-
         }
 
+        /// <summary>
+        /// Open edit window for selected customer
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void btnEditCustomer_Click(object sender, RoutedEventArgs e)
         {
             if (dataGrid.Items.Count < 1)
                 return;
 
             EditClient editCurrentClient = new EditClient();
-            editCurrentClient.selectedCustomerToEdit = selectedCustomer;
+            editCurrentClient.selectedCustomerToEdit = selectedCustomer; //passing selected customer
             editCurrentClient.ShowDialog();
         }
-
+        /// <summary>
+        /// Handling additional pupil detection feature  setting
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void chbUseHoughTransform_Checked(object sender, RoutedEventArgs e)
         {
             Utilities.useHoughTransoformPupilDetection = true;
             
         }
-
+        /// <summary>
+        /// Handling additional pupil detection feature setting
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void chbUseHoughTransform_Unchecked(object sender, RoutedEventArgs e)
         {
             Utilities.useHoughTransoformPupilDetection = false;

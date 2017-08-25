@@ -15,7 +15,7 @@ using System.Windows.Shapes;
 namespace ImageVerification
 {
     /// <summary>
-    /// Interaction logic for DatabaseConnectionSettings.xaml
+    /// View for modyfing connection details to database
     /// </summary>
     public partial class DatabaseConnectionSettings : Window
     {
@@ -28,12 +28,17 @@ namespace ImageVerification
 
         private void Okbtn_Click(object sender, RoutedEventArgs e)
         {
-            //connectionString = "SERVER=localhost; DATABASE=lista_klientow;UID=root;PASSWORD=gulki1;"
+            // Applying changes to connection string       
+             Utilities.serverName = Servertbox.Text;
+             Utilities.databaseName = Basetbox.Text;
+             Utilities.user = Usertbox.Text;
+             Utilities.password = Passwordtbox.Password;
 
-            connectionString = "SERVER=" + Servertbox.Text + "; " + "DATABASE=" + Basetbox.Text + "; " + "UID=" + Usertbox.Text + ";" +"PASSWORD="+ Passwordtbox.Password + ";";
-            Utilities.connectionString = connectionString;
-            MessageBox.Show("Zapisano ustawienia","Sukces",MessageBoxButton.OK,MessageBoxImage.Information);
-            this.Close();
+             connectionString = "SERVER=" + Servertbox.Text + "; " + "DATABASE=" + Basetbox.Text + "; " + "UID=" + Usertbox.Text + ";" +"PASSWORD="+ Passwordtbox.Password + ";";
+             Utilities.connectionString = connectionString;
+             MessageBox.Show("Zapisano ustawienia","Sukces",MessageBoxButton.OK,MessageBoxImage.Information);
+
+             this.Close();
         }
 
         private void Cancelbtn_Click(object sender, RoutedEventArgs e)

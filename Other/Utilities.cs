@@ -6,22 +6,26 @@ using System.Threading.Tasks;
 
 namespace ImageVerification
 {
+    /// <summary>
+    /// Utility class holding important program wide parameters
+    /// </summary>
     public static class Utilities
     {
         public static string currentID = "";
-        public static string serverName = "localhost";
-        public static string databaseName = "lista_klientow";
-        public static string user = "root";
+        public static string serverName = "gulczy.ayz.pl";
+        public static string databaseName = "gulczy_listaKlientow";
+        public static string user = "gulczy_root";
         public static string password = "gulki1";
         public static string connectionString = "SERVER=" + serverName + "; " + " DATABASE=" + databaseName + ";" + "UID=" + user + "; " + "PASSWORD=" + password + "; ";
-        //Rozmiar bounding box w ktory trzeba trafic aby przeniesc punkt
+        ///Size of bounding hit box 
         public static int    grabPixelOffset = 10;
-        //Rozmiar punktu charakterystycznego na obrazie
+        //Size of the feature point on image
         public static int markPointSize = 8;
         public static bool resizeImage = false;
         public static double resizeFactor = 0.0;
         public static bool useHoughTransoformPupilDetection = false;
-        // Błędny indeks punktu do przeniesienia
+
+        // Incorrect index of point to move
         public enum Index
         {
             NotValidIndex = 99
