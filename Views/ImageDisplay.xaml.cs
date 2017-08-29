@@ -403,12 +403,17 @@ namespace ImageVerification
 
 
 
+
+
+
+
+
         #endregion
-
-
-
-
-
-
+        int rotateAngle = 0;
+        private void btnRotate_Click(object sender, RoutedEventArgs e)
+        {
+            imageDisplay.RenderTransformOrigin = new Point(0.5, 0.5);
+            imageDisplay.RenderTransform = new RotateTransform(rotateAngle += 90);
+        }
     }
 }

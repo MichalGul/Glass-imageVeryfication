@@ -84,11 +84,13 @@
                 <Grid.RowDefinitions>
                     <RowDefinition Height="*"></RowDefinition>
                     <RowDefinition Height="*"></RowDefinition>
+                    <RowDefinition Height="*"></RowDefinition>
                 </Grid.RowDefinitions>
                 <Button Style="{StaticResource ButtonStyle}" x:Name="btnShowMark" Grid.Column="0" Grid.Row="0" Content="Wyświetl punkty" Margin="10,0,0,10" Click="btnShowMark_Click"/>
                 <Button Style="{StaticResource ButtonStyle}" x:Name="btnClear" Grid.Column="1" Grid.Row="0" Content="Wyczyść" Margin="10,0,0,10" Click="btnClear_Click"/>
                 <Button Style="{StaticResource ButtonStyle}" Grid.Column="0" Grid.Row="1" HorizontalAlignment="Center" x:Name="btnApply" Content="Zatwierdź" Margin="10,0,0,10" Click="btnApply_Click"/>
                 <Button Style="{StaticResource ButtonStyle}" x:Name="btnCancel" Content="Zamknij" Grid.Column="1" Grid.Row="1" Margin="10,0,0,10" Click="btnCancel_Click" />
+                <Button Style="{StaticResource ButtonStyle}" Grid.Column="0" Grid.Row="2" HorizontalAlignment="Center" x:Name="btnRotate" Content="Obróć" Margin="10,0,0,10" Click="btnRotate_Click"/>
 
             </Grid>
 

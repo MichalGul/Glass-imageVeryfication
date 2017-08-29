@@ -72,7 +72,8 @@ namespace ImageVerification
                     else
                     {
                         MessageBox.Show("Analiza zdjęcia zakończyła się niepowodzeniem. Spróbuj jeszcze raz z innym zdjeciem.", "Błąd", MessageBoxButton.OK, MessageBoxImage.Error);
-                        CloseWindow();
+                        CloseAllImageWindows();
+                       
                     }
                 }
                 else if (Utilities.resizeImage == true)
@@ -85,7 +86,7 @@ namespace ImageVerification
                     else
                     {
                         MessageBox.Show("Analiza zdjęcia zakończyła się niepowodzeniem. Spróbuj jeszcze raz z innym zdjeciem.", "Błąd", MessageBoxButton.OK, MessageBoxImage.Error);
-                        CloseWindow();
+                        
                     }
 
                 }
